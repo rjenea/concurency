@@ -1,0 +1,6 @@
+Here in this very simple example, one thread performs addition, one thread performs multiplication, and the main thread performs the division based on the results of the
+addition and multiply threads. 
+Since there is no need to communicate data between threads, we only need to consider the order of thread execution.
+In the ThreadRunner (ie main) thread, addition and multiplication join the main thread. 
+The join() method is used when we want the parent thread to wait until the threads which call join() end. 
+In this case, we want addition and multiplication to complete first and then do the division.

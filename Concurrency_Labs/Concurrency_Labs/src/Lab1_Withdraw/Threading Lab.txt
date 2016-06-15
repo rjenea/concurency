@@ -1,0 +1,95 @@
+ Threading Lab
+
+The objectives of this Lab are to:
+* Review knowledge of basic threading
+* Reinforcement of the general principles of threading  
+
+
+Overview
+
+The practical will ask you complete a trivial Bank application, to which you will add threading support 
+making it synchronized and hence multi-access safe.
+
+Exercise - Adding Thread Support
+
+The exercise asks you to create a class called WithdrawThread by extending Thread.
+
+This will enable you to execute the bank withdrawals in separate threads.  
+
+You will make this thread-safe by using synchronization.
+
+
+Exercise - Implement and test thread
+
+1. Run the application BankApplication 
+
+   You can most easily do this in Eclipse/Netbeans via right-click, Run As > Java Application.  
+   Apart from the main thread, currently there are no threads though when buttons are clicked on the Swing GUI 
+   the AWT thread will process the event.
+
+2. The structure of the application is as follows:
+
+   Class BankApplication. This is a Swing GUI and contains methods which are called when buttons are clicked, 
+   and there are also some methods you can call to output information.
+
+   Class Bank. This application class backs up the GUI and performs the real work initiated by the GUI button clicks.
+
+   Interface BankUpdater. This is implemented by Class BankApplication and contains call-back methods which you can use from your Bank class.
+
+   Class Account. A simple bank account class, currently not thread-safe.
+
+3. You will be modifying the code in the application in various different ways, so it is important to understand how the classes fit together. 
+   You should see that the GUI creates an instance of the Bank class and passes a this reference to allow the callbacks to take place. 
+
+4. You should also see that the ActionListeners within the GUI code delegate their calls to methods such as jButton1ActionPerformed(). 
+   This makes it easier for you to separate your code out from the GUI code.
+
+5. Open the Bank class and examine the code. 
+
+   It contains functionality to access an Account object, held in its private state. 
+   The Account's deposit() and withdraw() methods are currently called directly from the application's EDT thread. 
+   You are going to change this but first you'll implement the thread class.
+
+6. Create a new class WithdrawThread. 
+
+7. Add three state variables, an Account object, a double called amount and a BankUpdater. 
+   Implement a constructor to initialize the state variables.
+
+8. Implement the run() method:
+   Create a local boolean called withdrawOK set to false
+   Loop while withdrawOK is false
+   Add a synchronized block locking on the account and call the withdraw() which returns a boolean value.
+   If this is still false, then block the current thread
+
+9. Open the Bank class again. 
+   In the deposit() method, place a synchronized block (locking on account object) around the deposit() method call.
+   In the withdraw() add code to create one of your WithdrawThreads passing in the account object and the double returned by getAmount() 
+   and then start your thread.
+   If withdraw() fails, you know that your thread will block. 
+   Implement the necessary code in order to release the thread.
+   Run and test that it is behaving correctly.  
+
+10. Now modify your code to use a Runnable instead of extending the Thread class. 
+
+11. Create a new class WithdrawRunnable, with almost identical code to your WithdrawThread, except for its class signature.
+
+12. Modify the code in the Bank class to use this instead of the previous WithdawThread.
+    Run and test your code to ensure it still works.
+
+13. Now refactor your code so that the WithdrawRunnable class becomes an Inner Class of Bank. 
+    What type of Inner Class do you think is most suitable and why?
+
+14. Complete your code and test it.
+
+    Some additional things to think about regarding the design
+
+    Does it matter now whether your inner class is a Runnable or a Thread subclass?
+
+    Can you achieve similar results by making Bank implement Runnable?
+
+    Should you create a DepositThread to contain code to call deposit() and mirror the design for WithdrawThread?
+
+
+
+
+

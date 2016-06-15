@@ -1,0 +1,84 @@
+Cancellation Lab
+
+The objectives of this Lab are to:
+
+    Implement a Cancellation policy
+    Write an service application
+  
+Overview
+
+This practical will ask you to implement a Logging Service, which as a service should be capable of being controlled independently. 
+
+This implies that it has its own lifecycle, and thus creation and cancellation need to be implemented properly and in such a way as 
+they do not corrupt data or application resources.
+
+Exercise - Logging Service
+
+1. The project contains a Swing GUI, VerboseApp, a class which backs this up, VerboseCode, and an interface which allows callbacks to the GUI. 
+   All of your code will go in VerboseCode and the logging classes which you will create.
+
+2. The existing code is rather simple, it attempts to simulate a busy application which generates various events which may require logging. 
+   Run the application and click on the START MESSAGES button to get an idea of how the application works in its present state.
+
+3. Note the problems inherent with updating graphics using multiple threads (there are 10 messaging threads in the application). 
+   If you understand how Swing works, you may like to fix the update mechanism before continuing.
+
+4. The buttons on the GUI relating to the logging service you are about to write call methods on VerboseCode's startLogging() and stopLogging(). 
+   These are empty at present, and eventually you will complete these to start/stop your logging service.
+
+5. Create a new class LogService. 
+   This is the class which controls the lifecycle of the service and thus the thread(s) used by the service. 
+   Declare an instance variable for a Collection to be used by a Producer-Consumer pattern. 
+   Declare a boolean variable to be used for closing down the service. 
+   Declare an instance variable for a PrintWriter which will be the destination of the log messages. 
+   Make your constructor assign the PrintWriter and initialise the queue.
+
+6. Create an Inner Class LogThread, extending Thread, which will act as a Consumer to the logging queue 
+   (The Producer is the application which generates messages in its own threads). 
+   In the run() method write a loop to take an elements from the queue and use the PrintWriter to output. 
+   You have access to these objects from the outer class since you used a Member Inner Class.
+
+7. Ensure that the PrintWriter is closed when the Thread dies.
+
+8. Create methods in LogService to control the service: start() and stop(), which should be used to control the LogThread.
+
+9. Create a method log() taking a String which puts the String on the queue. 
+   Throw an IllegalStateException if the service is not running.
+
+10. Delegate the appropriate calls from VerboseCode so that the LogService is started and stopped accordingly. 
+    Use System.out as the basis for your PrintWriter (i.e. constructor argument).
+
+11. This code is not particularly sophisticated but it allows you to begin testing and improving the service. 
+    Run and test.
+
+12. Although it's difficult to see, the service's shutdown mechanism can be improved. 
+    The first problem and assuming you are using a BlockingQueue, is the take() method() can block meaning the loop in your LogThread 
+    may never reach the looping condition. 
+    This means that even if the service is shut down, its internal thread may still be running indefinitely but in a blocked state.
+
+13. The second problem is that messages may have been sent to the log, but do not get a chance to be outputted as the service may be shut down 
+    in the meantime. 
+    Since we might lose a few messages that way this could be a major problem in some mission-critical applications, especially if the 
+    log service was itself shut down because of some problem.
+
+14. What is needed is after the request for shutdown has been received, is to have the service 'drain' all of the messages that are pending. 
+    One way to achieve this is for the Producers to signal the number of messages which have been sent. 
+    Declare an int variable in LogService for messages which have been sent.
+
+15. Increment and decrement the int counter in the lifecycle of the Producer-Consumer and check to see that the 
+    number is zero before allowing the LogThread to die. 
+    Carefully consider the thread-safety issues of this counter implementation.
+
+16. Run and test your application. 
+    Are there any potential deadlocks?
+
+17. Now to address the problem noted at 12, consider an interruption policy.  
+    When the service is shut down in stop(), call interrupt() on the thread which will cause the take() method to throw an InterruptedException. 
+    This you can then catch and thus allow the thread to subsequently exit. 
+    You may need to refactor your code slightly and throw an InterruptedException from the log() method, which must be caught in VerboseCode. 
+
+18. Now you should be in a position to run and test a properly implemented service. 
+    You might like to think of ways to further modify the way the application behaves to test the LogService.
+
+
+

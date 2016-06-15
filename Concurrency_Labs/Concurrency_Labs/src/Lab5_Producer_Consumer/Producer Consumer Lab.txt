@@ -1,0 +1,87 @@
+ Producer Consumer Lab
+
+
+The objectives of this Lab are to:
+
+    Use BlockingQueue to implement a channel
+    Write an application based on the Producer-Consumer Pattern
+
+
+Overview
+
+This Lab will ask you to use a bounded blocking Collection to implement a channel in a Producer-Consumer application. 
+
+The Producers will attempt to navigate the filesystem on your machine and the Consumers will do some processing, for example reporting file details.
+
+
+Exercise Producer and Consumer Tasks
+
+1. The project initially doesn't contain much code - you will create the two classes for the Producer and Consumer.
+
+2. In your main() method, declare and initialise a Java Collection, which will be suitable for a Producer-Consumer channel. 
+   The Collection should be set up to store java.io.File objects. 
+   It should be bounded, blocking and threadsafe. 
+   Give it an in initial capacity of 10.
+
+3. Create a class FileProducer. You could make this an Inner Class but there is no great benefit in doing this.
+
+4. Declare instance variables for your Collection, and a File, which will be the root for a subsequent depth-first algorithm which your 
+   Producer will implement. 
+   Initialise these variables using a constructor taking the two parameters.
+
+5. Declare a method recurse() which takes a File as a parameter. 
+   Submit your File to the channel. 
+   If the File happens to be directory, use the listFiles() method and loop through the contained Files using recursion to process them
+   in a similar way. 
+
+6. Remember that these producer and Consumer objects need to be tasks ie they need to be Runnable. 
+   Implement Runnable and provide a run() method which begins the recursion.
+   This essentially completes your work on the Producer. 
+
+7. Note the code in the main() method parses command-line parameters for a series of filenames specified in the array of Strings.  
+   It then checks whether the File exists and adds these to a List. 
+   You can use this as the basis for creating Producer objects.
+
+8. For each File in the List, instantiate a new FileProducer object with the File as its root.
+
+9. Using Threads set the Producers running.
+
+10. Run and test your application. 
+    You must specify some command-line parameters. 
+    In Eclipse, you do this via Run > Run Configurations > Arguments > Program Arguments. 
+    Give a list of filenames, separated by spaces. 
+    You can use relative or absolute names. 
+    Since you currently have no Consumers, what happens?
+
+11. Kill the application and begin work on the Consumer. 
+    Create a class FileConsumer, also a Runnable, and with a constructor to pass the channel, which you keep as an instance variable.
+
+12. Also have each Consumer instance have a unique ID which can be used in your output to distinguish which Consumer instance 
+    has processed the data. 
+    You can pass this ID through from your main application or find some other way to identify it 
+    e.g. a static counter incremented in the constructor.
+
+13. The run() method should loop, extracting an element from your channel. 
+    For now, you can just print out the following information:
+        the filename
+        the Consumer's ID
+        some kind of count as to how many files have been processed by this consumer
+
+14. Do you need to consider thread safety issues in your Consumer, eg for a processing counter?
+
+15. Provide some way of closing down the Consumer, for example by allowing the while loop to terminate. 
+    You will return to this issue in a later exercise.
+
+16. Back in your main() method, initialise some Consumer objects. 
+    This could be set to the number of processors, accessible via Runtime.getRuntime().availableProcessors().
+
+17. Start the Consumers in their own threads.
+
+18. Run and test your application. Does it work?
+
+19. As always, consider and potential for deadlock, livelock, or starvation that the application might suffer from.
+
+
+
+
+

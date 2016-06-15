@@ -1,0 +1,44 @@
+Executors Lab
+
+
+The objectives of this Lab are to:
+    Use Concurrency API's Executor framework
+    Use Thread Pools supported by the API  
+
+Overview
+
+This part of the practical will ask you to again work on the Bank applications from earlier, but this time using the Executor framework
+to control the creation and allocation of threading resources.
+
+Exercises - Using Executor
+
+In the first part of this exercise you will modify the code which uses the WithdrawThread to access the single Account object.
+
+
+Exercise Part 1 - Use Executor for WithdrawThreads
+
+1. Run the application BankApplication via Run As > Java Application.  
+
+2. You will recall the structure of the application. 
+   Here we use a separate class for WithdrawRunnable although you may prefer to use a Local Inner Class which would make 
+   the constructor and instance variables unnecessary.
+
+3. Open Bank and examine the code. 
+   Declare a new instance variable for an ExecutorService and initialise it in Bank's constructor. 
+   Use a single-threadpool implementation available via the factory method in Executors. 
+
+4. In the withdraw() method, replace the creation of a Thread object with a call to the ExecutorService to submit your task.
+
+5. Run and test your application.
+
+6. Recall that it is quite important to ensure that a GUI doesn't get blocked indefinitely by having a synchronized block. 
+   Thus, implement the deposit() method to use a Runnable in a similar way.
+
+7. Does the fact that we are using a thread pool of size 1 affect the situation with synchronization?  
+   Do we even need synchronized bocks any more
+
+
+
+
+
+

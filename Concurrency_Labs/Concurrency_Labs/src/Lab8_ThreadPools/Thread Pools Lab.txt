@@ -1,0 +1,84 @@
+Thread Pools Lab
+
+Overview
+
+The practical is based on the earlier Bank application, to which you will now add thread pooling support.
+
+Exercise - Using Thread pooling
+
+In this exercise, you will abandon the AccountThread and implement a thread pool.  
+You will create a new class called ThreadQueue which will support an execute() method which takes a Runnable object.  
+This will be placed in a queue until a thread in the pool is available.  
+For the purposes of testing, we suggest you use a pool containing three threads.  
+We have provided a starter version of the code in the Project  
+This is the same as the solution to the previous exercise, but contains a skeleton ThreadQueue class and a Bank applet 
+full of comments as appropriate.  
+Again, the Account class can remain untouched and although the AccountThread class is still there you won't need it.
+
+1. Open up ThreadQueue. 
+   Add three private state variables. 
+   All these must be final, as you will be implementing a member class called PoolMember to represent the thread pool member threads.   
+   This will need to access these variables. 
+
+    numOfThreads - An int to hold member size
+    threads - The thread pool which is an array of PoolMember objects
+    queue - A LinkedList to hold tasks
+   
+   Next, add a constructor which takes an int for the pool size and initialize the three state finals, ie.
+    Assign pool size to numOfThreads
+    Create a new LinkedList
+    Create new array of PoolMembers
+    Loop through threads and create a new PoolMember (pass it a String for its name - choose your own) and invoking its start() method
+
+   Implement an execute() method that will take a Runnable object and that will add the task to a task queue and notify any waiting thread. 
+   Synchronize a block with a lock on queue and within it add the Runnable argument to the queue and invoke notify() (on queue).
+
+   Finally, uncomment the tidyUp() method supplied.  
+   Note the use of the isAlive() method on each of the pool members and the PoolMember's setDead() method.
+
+2. Implement the PoolMember class as a member class and make sure it extends Thread.
+   
+   This class only needs one state variable, a boolean to represent its state (dead or alive - remember tidyUp()?)
+   
+   Add a simple default constructor which invokes super()
+
+   Add an overloaded constructor which takes a String (its name) and invoke super() passing on the name.
+
+   Implement the setDead() method which simply sets the state boolean to be true (i.e. to indicate dead!).
+
+   Overwrite the run() method.
+   
+   While the thread is alive, you need to grab a task from the queue and run() it, 
+   ie. synchronize a block on queue, wait() until queue is not empty, then remove the task and place it into the Runnable reference.
+
+   Now run()the Runnable reference using a thread. 
+   Wrap up wait() in try/catch.
+
+   Compile ThreadQueue.java to remove syntax errors.
+
+3. Open up the Bank class and remove all traces of AccountThread in favour of ThreadQueue.
+
+   Add a state variable reference to hold an object of type ThreadQueue.
+
+   In init(), initialize the reference with a new ThreadQueue passing in 3 to represent the number of members.
+
+   All four ActionListener handlers (you have four buttons) will need to be changed. 
+   Remove (or comment out) the code that creates and starts the AccountThreads.  
+   Create a Runnable reference and assign it the return from a makeRunnable() method.  
+   This method (which you will implement shortly) takes a String to represent the thread type, i.e. "Withdraw" or "Deposit".  
+   Now you should invoke the ThreadQueue object's execute() method, passing in your Runnable object.
+
+   Make sure you use the String value appropriate for each button. 
+
+   Implement the makeExecutable() method.  
+   This method is almost identical to the one you wrote in an earlier exercise. 
+   There is only one change you need to make, instead of  System.out.println("A Withdraw thread") you will use account.withdraw(getAmount()) 
+   (and similar for Deposit).
+
+4. Run and test your application. 
+
+
+
+
+
+

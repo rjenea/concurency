@@ -1,0 +1,85 @@
+ Thread Safety Lab
+
+The objectives of this session are to:
+* Review knowledge of basic threading
+* Reinforcement of the general principles of threading  
+  
+Overview
+
+This part of the practical will again ask you complete a trivial Bank application but you will add threading support 
+making it synchronized and hence multi-access safe.
+
+You will have a 'busy' situation where threads are used to swap money between different accounts.
+
+Exercises - Adding Thread Support
+
+The exercise asks you to add threading to implement account transfers. 
+The basic Thread subclass is already provided for you, but you will need to make a number of changes. 
+You will make this thread-safe by using synchronization.
+
+
+Exercise - Implement and test thread
+
+1. Run the application BankApplication via Run As > Java Application.  
+
+2. The structure of the application is similar to that of Lab1 but incorporates an additional class.
+
+   This class, TransferThread, is a subclass of Thread containing some simple code to transfer money as specified by constructor arguments 
+   between two accounts. 
+   Currently there is no provision for a retry if a transfer fails.
+
+3. Open the Bank class and examine the code. 
+   It contains functionality to transfer amounts of money, via TransferThread objects which are created and started in startThreads(). 
+   The stopThreads() method stops the threads and pauses for 3 seconds before then outputting the balances to the GUI.
+
+4. This TransferThread class is not realistic, but does demonstrate some of the issues that would exist in a real-world application. 
+   In its run() method you will see there is a loop to continually transfer money between the accounts whilst pausing for a small period of time.
+
+5. Currently the startThreads() and stopThreads() methods in Account are called directly from the application's EDT thread. 
+   When you test the application, you will observe that there are a number of serious bugs. 
+   For example, despite the busy nature of transferring, the total amount held between the two accounts should remain constant
+   and no money should be 'lost' by the system. It is obvious that this isn't happening.
+
+6. Note also that the thread's run() method uses a boolean instance variable to indicate whether the thread should terminate 
+   at the next loop iteration. Is this variable to be trusted?  Implement the necessary solution.
+
+7. What about the boolean return value from withdraw(), can this be trusted?
+
+8. In terms of thread-safety, can withdraw() and deposit() calls interweave with each other?  Are their calculations atomic?
+
+9. From what you know about accessing complex code in a multi-threaded application, and specifically if you perform operations on doubles, 
+   the code clearly is not thread-safe and so we need to impose a synchronization policy. 
+   Consider using synchronized blocks to fix the safety issue.
+
+10. Run and test your application. Does it work perfectly?  
+    Be aware that concurrent applications sometimes work by accident!  
+    You might like to run it several times, perhaps modifying the pauses or the amounts that the program uses.
+
+11. Another issue that frequently arises from multi-threaded applications is that of deadlock. 
+    Is there any potential for deadlock from your synchronized blocks?  
+    If you are using nested blocks somehow, then clearly the answer to this question is yes.
+
+12. One way to address the issue of deadlock between object monitors is to perform resource ordering to obtain the locks in a deterministic way. 
+    Try and implement your code to achieve this. 
+    What will you use to order the Account objects?  
+    Is this safe and if it isn't, how would you fix it? 
+
+13. Another potentially fatal issue in the application is to how the final results, the balances, are printed. 
+    At present, the application pauses for 3 seconds in an attempt to ensure that all of the threads have finished their work. 
+    But even for such a simple operation, since there is an unlimited number of these threads and it may not be the case that 
+    they really have all completed within this time, this is not very reliable;
+
+14. Can you solve the issue of printing balances 'too soon', or 'at an inconvenient time' 
+    i.e. during the process of withdrawal or depositing by employing synchronizing access to getBalance()?
+
+15. You should also consider the effect of blocking threads in GUI-initiated methods, 
+    i.e. ones which are called in the EDT (Event Dispatching Thread of Swing). 
+    Modify your code suitably by creating a separate thread in stopThreads() which calls the setRunning() method of each TransferThread, 
+    and then checks to ensure the threads have all stopped before reporting the balances to the GUI. 
+    Use wait() and notify() where appropriate to block the reporting thread until things are finished.
+
+16. Run and test your application to ensure that there are no issues remaining. How can you be sure about this?
+
+
+
+

@@ -1,0 +1,30 @@
+
+
+Lab Part 2 - Use Executor for TransferThreads
+
+1. Run the application BankApplication via Run As > Java Application.  
+
+2. Here we again employ a separate class for TransferThread, although as in the previous Lab, the use of a Local Inner Class might be more elegant. 
+
+3. Change the TransferThread class so that it is a Runnable rather than a Thread. 
+   You may wish to rename the class.
+
+4. Open the Bank class and as in Part 1, provide code to create an ExecutorService object. 
+   Use the submit() method to submit your Runnable tasks.
+
+5. Should you use the ExecutorService for the shutdown handling, when the STOP button is clicked?  
+   What changes, if any, should be made to the synchronization and blocking.
+
+6. Recall that the isAlive() method of a Thread was useful when we used one-thread-per-task as we could easily see when the tasks we all completed.
+   This approach is no longer possible with an Executor managing the thread resources. 
+   So how can we check that a task (i.e. Runnable) has been completed?  
+   What is returned by the submit() method of ExecutorService?
+
+7. Run and test your application: does it work?  
+   If you followed the instructions, you will find that the application has a serious flaw. 
+   Diagnose the problem. 
+   Is there a solution?
+
+
+
+

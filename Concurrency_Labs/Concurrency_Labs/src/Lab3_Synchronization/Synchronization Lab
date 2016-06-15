@@ -1,0 +1,131 @@
+Synchronizing Access to Shared Data
+
+In this Lab, you will add code to an existing application, a project that purchases shirts from a store. 
+
+Most of the code is already provided. 
+
+You will add the appropriate exception handling code.
+
+1. Create a SynchronizedPurchasingAgent class.
+   Add a purchase method public void purchase() {} 
+   This method should obtain a SynchronizedStore reference. 
+   Note that the SynchronizedStore class implements the Singleton design pattern.
+
+		Store store = Store.getInstance(); 
+
+   eg 
+
+        public class SynchronizedPurchasingAgent{
+            public void purchase(){
+                SynchronizedStore store = SynchronizedStore.getInstance();
+                if(store.getShirtCount()>0 && store.authorizeCreditCard("1234",15.00)){
+                    SynchronizedShirt shirt = store.takeShirt();
+                    System.out.println("The shirt is yours");
+                    System.out.println(shirt);
+                } else {
+                    System.out.println("No shirt for you");
+                }
+            }
+        }
+
+
+
+2. Buy a Shirt.
+
+   You should verify that the store has at least one shirt in stock using getShirtCount()
+
+   Use the store to authorize a credit card purchase. 
+   Use a credit card account number of "1234" and a purchase amount of 15.00. 
+   A boolean result is returned.
+
+	Store.authorizeCreditCard( "1234" , 15 .00) 
+
+   If there are shirts in stock and the credit card purchase was authorized, you should take a shirt from the store.
+	
+        shirts shirt = store.takeShirt(l; I
+
+   Print out the shirt and a success or failure message if a shirt was acquired or not.
+
+3. Run the project several times. 
+
+   Note that the store contains only a single shirt. 
+   You will see many possible variations of output. for example:
+
+	Two success messages and two shirts (output may appear in varying order)
+	Two success messages, one shirt, and one null
+	Two success messages, one shirt, and one exception
+	One success message, one shirt, and one failure message (desired behavior, but least likely)
+
+4. Examine how the SynchronizedPurchasingAgent class is being used.
+
+   Use a constructor and a print statement to discover how many instances of the SynchronizedPurchasingAgent class 
+   are being created when running the application.
+   eg
+        public SynchronizedPurchasingAgent(){System.out.println("Creating an agent");}
+	
+   Sometimes objects are created per-request and sometimes an object may be shared by multiple requests. 
+   The variations in the model affect which code must be thread-safe.
+
+   Within the purchase() method use the Thread. currentThread() method to obtain a reference to the thread currently 
+   executing the purchase() method. 
+    
+   eg 
+        Thread t = Thread.currentThread();
+        System.out.println("Thread:" + t.getname() + "," + t.getID());
+	
+   Use a single print statement to print the name and ID of the executing thread.
+
+   Run the project and observe the output.
+
+5. Open the SynchronizedStore class and add a delay to the authorizeCreditCard method.
+
+   Obtain a random number in the range of 1—3, the number of seconds to delay. 
+
+   Print a message indicating how many seconds execution will be delayed.
+		int seconds = (int) (Math.random() * 3 + 1); 
+
+   Use the appropriate static method in the Thread class to delay execution for 1 to 3 seconds.
+
+eg
+        int seconds = (int) (Math.random() * 3 + 1);
+        System.out.println("Sleeping for " + seconds + " seconds");
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            System.out.println("Interrupted");
+        }
+
+   What if your delay is interrupted? 
+   How can you be sure that execution is delayed for the desired number of seconds? 
+   Should a different action be taken?
+
+6. Run the project multiple times. 
+
+   You should eventually see a stack trace for a java.util.NoSuchElementException. 
+
+   Locate the line within the SynchronizedPurchasingAgent purchase method that is displayed in the stacktrace. 
+
+   Review the action occurring on that line.
+
+7. Use a synchronized code block to attempt to create more predictable behavior.
+
+   Modify the purchase method in the PurchasingAgent class to contain a synchronized code block.
+
+    eg
+
+        synchronized(store) {
+            if (store.getShirtCount() > 0 && store.authorizeCreditCard("1234", 15.00)) {
+                SynchronizedShirt shirt = store.takeShirt();
+                System.out.println("The shirt is ours!");
+                System.out.println(shirt);
+            } else {
+                System.out.println("No shirt for you");
+            }
+        }
+   
+    Simply adding synchronized to the method signature or using a synchronizedblock that uses the this object’s monitor will not work.
+
+8. Run the project.
+
+You should now observe the desired behavior, in the output window you should see one success message, one shirt, and one failure message.
+

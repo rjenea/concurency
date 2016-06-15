@@ -1,0 +1,50 @@
+Callables Lab
+
+The objectives of this Lab are to:
+
+    Review knowledge of basic threading
+    Use Callables, Futures, Executors and thread pools in a concurrent application
+
+
+1. There is a completed class Sale, which is a simple value object representing a response to a selling activity.
+   There is also a Frame class SellingApp and a Dialog class Salesman. 
+   Run the Frame class. 
+   Note that it puts up a number of dialog boxes some of which you can 'confirm' before quitting the application.
+   To make use of threading control each Salesman should be a task rather than just a GUI class 
+   (In reality a Salesman would perform a series of operations to get a sale, not just wait for a button-click) 
+   
+4. Make the Salesman class implement Callable. 
+   This should be genericised, and make your call() method return a Sale. 
+   Refactor the code so that the Sale object is created in this call() method.
+
+5. In the actionPerformed() method set the Boolean finished flag to be true. 
+    In call() provide a busy wait with the yield() method. 
+    eg
+        while (!finished) Thread.yield();
+    
+    Note that the yield() gives up the current Thread whatever that happens to be, so we are still not tied to a thread-per-callable model. 
+    Is there anything you should add to the declaration of finished?
+
+6. The code in SellingApp needs to be changed completely. 
+   In the begin() method create an ExecutorService, using the static method in Executors, to create a thread pool with several threads 
+   You can try experimenting with the number later.
+
+7. In a for loop, create 10 Salesman objects and then submit() them to the pool. 
+   The submit() method returns a Future object, which you should add to a List, which you must create prior to your for loop.
+
+8. Now make the main() thread sleep for 5 seconds.  Note this will not affect any of your submitted worker threads.
+
+9. Once this has woken up, loop round your Futures and for any of them which have completed, print out the returned Sale object. 
+   Be sure to catch all Exceptions that Callables might have thrown.
+
+10. Close down your thread pool.
+
+11. Run and test your application.
+
+12. Experiment with different pool sizes.
+    Does it make a difference if the pool size is greater or less than 10 (representing the number of salesmen)?  
+    What do you think is happening here?
+
+13. Can the application be improved by cancelling tasks that haven't completed by the cut-off time?  How would this be achieved?
+
+
